@@ -57,7 +57,13 @@ def make_stl(output_file_with_extension: str, input_file_with_extension: str):
     print(r.stdout)
     return r.stdout
 
-generate_parts = Agent("Generate-parts", "Use this when u want to generate a new high detail part", [search_docs, WebSearchTool()], instructions="You are a expert detailer who specializes in making OpenScad parts. you are a part of a whole. use the docs and the web to help you. make no no misakes. be very detailed. be very realistic. o genric rounded corner, i want every detail to amaze the user. return OpenSCAD code")
+
+generate_parts = Agent(
+    "Generate-parts",
+    "Use this when u want to generate a new high detail part",
+    [search_docs, WebSearchTool()],
+    instructions="You are a expert detailer who specializes in making OpenScad parts. you are a part of a whole. use the docs and the web to help you. make no no misakes. be very detailed. be very realistic. o genric rounded corner, i want every detail to amaze the user. return OpenSCAD code",
+)
 
 
 instruction = """ You are a master OpenSCAD designer who uses programming to create stunning 3d models
@@ -74,7 +80,16 @@ It should also be really big so you can put details on it unless otherwise speci
 enable_verbose_stdout_logging()
 agent = Agent(
     "OpenSCAD-Designer",
-    tools=[search_docs, WebSearchTool(), write_file, make_stl, generate_parts.as_tool("GenerateParts", "Use when u want to generate highly realistic or detailed parts")],
+    tools=[
+        search_docs,
+        WebSearchTool(),
+        write_file,
+        make_stl,
+        generate_parts.as_tool(
+            "GenerateParts",
+            "Use when u want to generate highly realistic or detailed parts",
+        ),
+    ],
     instructions=instruction,
 )
 
@@ -82,7 +97,7 @@ agent = Agent(
 async def main():
     result = await Runner.run(
         agent,
-        "Make a super realistic Taj Mahal. High detail no mistakes, one to one with color too",
+        input() or "Generate a clothes hanger",
     )
     print(result.final_output)
 
