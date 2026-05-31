@@ -1,4 +1,4 @@
-from agents import function_tool
+from agents import Agent, WebSearchTool, function_tool
 from openai import OpenAI
 client = OpenAI()
 
@@ -12,12 +12,30 @@ client.vector_stores.files.upload_and_poll(        # Upload file
 )
 
 @function_tool
-def search_docs(search_term: str="How to make a cube?" ):
+def search_docs(search_term: str="How to download from the cli" ):
 
     results = client.vector_stores.search(
         vector_store_id=vector_store.id,
         query=search_term,
     )
-
+    print(results)
     return results
 
+@function_tool
+def write_file(filenameWithExtension: str, content: str):
+    try:
+        with open(filenameWithExtension, "r"):
+            pass
+
+        return "File Already Exists"
+    
+    except FileNotFoundError:
+        with open(filenameWithExtension, "w", encoding="utf-8") as f:
+            f.write(content)
+        
+        return f"Wrote {content} to {filenameWithExtension}"
+    
+
+
+agent = Agent("OpenSCAD-Designer",
+              tools=[search_docs, WebSearchTool(), write_file]) 
