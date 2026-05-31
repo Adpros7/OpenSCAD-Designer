@@ -97,7 +97,7 @@ agent = Agent(
 async def main():
     result = await Runner.run(
         agent,
-        input() or "Generate a clothes hanger",
+        input(),
     )
     print(result.final_output)
 
